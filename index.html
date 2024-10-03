@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRACTICA SENSILLA DE LA UNIDAD 2</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #1a1a4d, #4d1a4d); /* Degradado azul oscuro a morado */
+            margin: 0;
+            padding: 20px;
+            color: #ffffff; /* Texto blanco */
+            position: relative; /* Para posicionar el canvas */
+        }
+
+        canvas {
+            position: absolute; /* Posicionamiento absoluto para el canvas */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Permite clics a otros elementos */
+            z-index: 0; /* Asegura que esté detrás de otros elementos */
+        }
+
+        h1 {
+            font-size: 48px; /* Tamaño del encabezado h1 */
+            text-align: center;
+            margin-bottom: 20px; /* Espacio inferior */
+            color: #ff0055; /* Color llamativo */
+            text-shadow: 0 0 15px rgba(255, 0, 85, 0.7); /* Sombra brillante */
+        }
+
+        h2 {
+            font-size: 36px; /* Tamaño del encabezado h2 */
+            margin-top: 40px; /* Espacio superior */
+            color: #00d2ff; /* Color llamativo */
+            text-shadow: 0 0 15px rgba(0, 210, 255, 0.7); /* Sombra brillante */
+        }
+
+        p {
+            font-size: 24px; /* Tamaño del texto del párrafo */
+            font-weight: bold; /* Texto en negrita */
+            color: #ffcc00; /* Color llamativo */
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Cuadrícula responsiva */
+            gap: 15px; /* Espacio entre las imágenes */
+            margin-top: 20px;
+        }
+
+        .gallery img {
+            width: 100%; /* Ancho completo de la imagen */
+            border-radius: 10px; /* Bordes redondeados */
+            transition: transform 0.3s; /* Transición suave */
+            cursor: pointer; /* Cambia el cursor al pasar por encima */
+            box-shadow: 0 0 15px rgba(255, 85, 255, 0.5); /* Sombra brillante */
+        }
+
+        .gallery img:hover {
+            transform: scale(1.05); /* Efecto de zoom al pasar el ratón */
+        }
+
+        /* Estilo del modal */
+        .modal {
+            display: none; /* Ocultar modal por defecto */
+            position: fixed; /* Posicionamiento fijo */
+            z-index: 1000; /* Asegura que esté sobre otros elementos */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8); /* Fondo oscuro semi-transparente */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal img {
+            max-width: 90%; /* Máxima anchura de la imagen en el modal */
+            max-height: 90%; /* Máxima altura de la imagen en el modal */
+            border-radius: 10px; /* Bordes redondeados */
+            box-shadow: 0 0 15px rgba(255, 85, 255, 0.5); /* Sombra brillante */
+        }
+
+        #musicButton {
+            position: absolute; /* Posicionamiento absoluto */
+            top: 20px; /* Espacio desde la parte superior */
+            left: 20px; /* Espacio desde la izquierda */
+            padding: 10px 20px;
+            font-size: 18px; /* Tamaño de la fuente del botón */
+            cursor: pointer;
+            z-index: 1001; /* Asegura que esté sobre otros elementos */
+            background-color: #ff0055; /* Color de fondo del botón */
+            border: none; /* Sin borde */
+            color: #fff; /* Texto blanco */
+            border-radius: 5px; /* Bordes redondeados */
+            box-shadow: 0 0 10px rgba(255, 0, 85, 0.7); /* Sombra brillante */
+        }
+
+        .music-image {
+            width: 80%; /* Ancho reducido de la imagen */
+            max-width: 600px; /* Ancho máximo para la imagen */
+            height: auto; /* Mantiene la proporción */
+            border-radius: 10px; /* Bordes redondeados */
+            margin: 20px auto; /* Espacio superior e inferior, centrado */
+            display: block; /* Centrar imagen */
+            opacity: 0; /* Comienza invisible */
+            animation: fadeIn 1s forwards; /* Añade animación de aparición */
+        }
+
+        .buho-image {
+            width: 50%; /* Ajusta este valor según tus necesidades */
+            max-width: 400px; /* Ancho máximo para la imagen */
+            height: auto; /* Mantiene la proporción */
+            display: block; /* Hace que el margen funcione */
+            margin: 20px auto; /* Centra la imagen con margen superior e inferior */
+            animation: pulse 1.5s infinite; /* Animación de pulso */
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1; /* Finaliza visible */
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05); /* Efecto de pulso */
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="fireworksCanvas"></canvas>
+
+    <button id="musicButton" onclick="toggleMusic()">Silenciar Música</button>
+    
+    <h1>VIDA EN EDC</h1>
+    
+    <h2>TODOS SON BIENVENIDOS</h2>
+    <p>
+        Bajo el Cielo Eléctrico, nos reunimos para celebrar la vida, amor, arte y la música. Desde los escenarios, el sonido, la pirotecnia y los performers, muchos elementos únicos son responsables de traer ese mundo a la vida. Te invitamos a caminar, explorar, interactuar y conectar. Imaginación y energía positiva son la moneda de cambio en este lugar.
+    </p>
+
+    <h2>ESCENARIOS</h2>
+    <p>
+        Nos movemos al unísono con el mismo beat universal y juntos creamos hermosas experiencias que nunca serán olvidadas.
+    </p>
+
+    <!-- Galería -->
+    <div class="gallery">
+        <img src="kinec.jpeg" alt="Imagen de EDC 2" onclick="openModal(this.src)">
+        <img src="dosx.jpeg" alt="Imagen de EDC 3" onclick="openModal(this.src)">
+        <img src="neonguarden.jpeg" alt="Imagen de EDC 4" onclick="openModal(this.src)">
+        <img src="wasteLand.jpg" alt="Imagen de EDC 5" onclick="openModal(this.src)">
+        <img src="the world.jpg" alt="Imagen de EDC 6" onclick="openModal(this.src)">
+        <!-- Agregar más imágenes según sea necesario -->
+    </div>
+
+    <h2>LA MUSICA</h2>
+    <p>
+        Nos movemos al unísono con el mismo beat universal y juntos creamos hermosas experiencias que nunca serán olvidadas.
+    </p>
+    
+    <!-- Imagen de la música -->
+    <img src="LINEUP.jpg" alt="Imagen relacionada con la música" class="music-image" onclick="openModal(this.src)">
+
+    <!-- Modal -->
+    <div class="modal" id="imageModal" onclick="closeModal()">
+        <img id="modalImage" src="" alt="Imagen Ampliada">
+    </div>
+
+    <h2>ARTE</h2>
+    <p>
+        Entra a un mundo de criaturas de metal que respiran fuego, superestructuras de madera tridimensionales, coloridas, ambientes que brillan en la oscuridad, toda una flora y fauna incrustada de luces LED. Una parte vital de la experiencia, las instalaciones de arte interactivas dispersas en EDC son constructoras de puentes entre la naturaleza y tecnología; están ahí para inspirar a todos aquellos que entren en contacto con ellas.
+    </p>
+
+    <img src="buho.jpg" alt="Imagen de buho" class="buho-image">
+
+    <!-- Audio -->
+    <audio id="backgroundMusic" src="Avicci.mp3" autoplay loop></audio>
+
+    <script>
+        const canvas = document.getElementById('fireworksCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        class Firework {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.colors = ['#ff0055', '#00d2ff', '#ffcc00', '#ff8c00', '#ff00ff'];
+                this.size = Math.random() * 3 + 2;
+                this.speed = Math.random() * 3 + 2;
+                this.angle = Math.random() * Math.PI * 2;
+                this.radius = Math.random() * 50 + 50;
+                this.opacity = 1;
+            }
+
+            update() {
+                this.x += Math.cos(this.angle) * this.speed;
+                this.y += Math.sin(this.angle) * this.speed;
+                this.opacity -= 0.02;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.colors[Math.floor(Math.random() * this.colors.length)];
+                ctx.globalAlpha = this.opacity;
+                ctx.fill();
+                ctx.closePath();
+            }
+        }
+
+        const fireworks = [];
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (Math.random() < 0.1) {
+                fireworks.push(new Firework(Math.random() * canvas.width, Math.random() * canvas.height));
+            }
+            fireworks.forEach((firework, index) => {
+                firework.update();
+                firework.draw();
+                if (firework.opacity <= 0) {
+                    fireworks.splice(index, 1);
+                }
+            });
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        function openModal(src) {
+            document.getElementById('modalImage').src = src;
+            document.getElementById('imageModal').style.display = 'flex'; // Muestra el modal
+        }
+
+        function closeModal() {
+            document.getElementById('imageModal').style.display = 'none'; // Oculta el modal
+        }
+
+        function toggleMusic() {
+            const audio = document.getElementById('backgroundMusic');
+            const button = document.getElementById('musicButton');
+            if (audio.paused) {
+                audio.play();
+                button.textContent = 'Silenciar Música';
+            } else {
+                audio.pause();
+                button.textContent = 'Reproducir Música';
+            }
+        }
+    </script>
+</body>
+</html>
